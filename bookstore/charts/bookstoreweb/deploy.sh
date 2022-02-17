@@ -1,0 +1,1 @@
+helm upgrade bookstore_v1 -f deployment.yaml
