@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:13.1
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+      - POSTGRES_USER=postgress
+      - POSTGRES_PASSWORD=tiger123
+      - APP_DB_USER=appuser
+      - APP_DB_PASS=tiger123
+      - APP_DB_NAME=stores
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+      
+  web:
+    # Path to dockerfile.
+    # '.' represents the current directory in which
+    # docker-compose.yml is present.
+    build: .
+    depends_on:
+      - database
+
+    # Mapping of container port to host
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
