@@ -17,7 +17,7 @@ FROM build AS publish
 RUN dotnet publish "bookstore.csproj" -c Release -o /app/publish
 
 FROM base AS final
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown appuser: /app
 WORKDIR /app
 COPY --from=publish /app/publish .
